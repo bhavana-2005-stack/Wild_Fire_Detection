@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire AI - Monitoring</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="title">🔍 Auto Monitoring</h1>
+            
+            <div class="counter">
+                <p>Fire Counter: {{ fire_counter }} / 10</p>
+            </div>
+            
+            <form id="monitor-form" action="/upload-auto-input" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
+                <input type="file" name="file" id="monitor-file-input" accept="image/*" required style="color: white; margin-bottom: 10px;">
+                <button type="submit" class="btn">Add Image to Auto-Monitor</button>
+            </form>
+            
+            {% if message %}
+                <p class="message">{{ message }}</p>
+            {% else %}
+                <div class="result {{ prediction.lower() }}">
+                    <h2>{{ '🔥 Fire Detected' if prediction == 'Fire' else '✅ No Fire Detected' }}</h2>
+                    <p class="confidence">Confidence: {{ confidence|round(2) }}%</p>
+                    <p>Processing: {{ current_image }}</p>
+                </div>
+                <div class="image-preview">
+                    <img src="{{ url_for('uploaded_file', filename=current_image) }}" alt="Monitoring Image">
+                </div>
+                <br>
+                <a href="/monitor" class="btn">Process Next Image</a>
+            {% endif %}
+            
+            <a href="/" class="btn">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

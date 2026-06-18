@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="title">🔥 Wildfire AI</h1>
+            <p class="subtitle">Detect wildfires from images or webcam</p>
+            
+            <div id="webcam-section">
+                <p id="webcam-status" style="color: white; margin-bottom: 10px;"></p>
+                <video id="webcam" autoplay playsinline style="max-width: 100%; border-radius: 10px; margin-bottom: 10px; display: none;"></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <button id="start-webcam" class="btn">Start Webcam</button>
+                <button id="capture-btn" class="btn" style="display: none;">Capture & Detect</button>
+            </div>
+            
+            <form action="/predict" method="POST" enctype="multipart/form-data" class="upload-form" id="upload-form">
+                <div class="upload-area" id="drop-area">
+                    <input type="file" name="file" id="file-input" accept="image/*" hidden>
+                    <div class="upload-icon">📷</div>
+                    <p class="upload-text">Drag & drop an image here or click to browse</p>
+                </div>
+                <button type="submit" class="btn">Detect Fire</button>
+            </form>
+            
+            <a href="/monitor" class="monitor-link">Auto Monitoring Mode →</a>
+        </div>
+    </div>
+    
+    <script>
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const startWebcamBtn = document.getElementById('start-webcam');
+        const captureBtn = document.getElementById('capture-btn');
+        const webcam = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const uploadForm = document.getElementById('upload-form');
+        const webcamStatus = document.getElementById('webcam-status');
+        
+        dropArea.addEventListener('click', () => fileInput.click());
+        
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('dragover');
+        });
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+        
+        startWebcamBtn.addEventListener('click', async () => {
+            webcamStatus.textContent = 'Requesting camera access...';
+            webcamStatus.style.color = '#ff9800';
+            
+            try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('getUserMedia not supported in this browser');
+                }
+                
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true 
+                });
+                
+                webcam.srcObject = stream;
+                webcam.style.display = 'block';
+                webcamStatus.textContent = 'Webcam active!';
+                webcamStatus.style.color = '#4CAF50';
+                startWebcamBtn.style.display = 'none';
+                captureBtn.style.display = 'inline-block';
+                
+            } catch (err) {
+                console.error('Error accessing webcam:', err);
+                let errorMsg = 'Could not access webcam.';
+                if (err.name === 'NotAllowedError') {
+                    errorMsg += ' Please allow camera permissions in your browser settings.';
+                } else if (err.name === 'NotFoundError') {
+                    errorMsg += ' No camera found on this device.';
+                } else if (err.name === 'NotReadableError') {
+                    errorMsg += ' Camera is already in use by another app.';
+                }
+                webcamStatus.textContent = errorMsg;
+                webcamStatus.style.color = '#f44336';
+                alert(errorMsg);
+            }
+        });
+        
+        captureBtn.addEventListener('click', () => {
+            canvas.width = webcam.videoWidth || 640;
+            canvas.height = webcam.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(webcam, 0, 0);
+            
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'webcam-capture.jpg', { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                uploadForm.submit();
+            }, 'image/jpeg', 0.9);
+        });
+    </script>
+</body>
+</html>

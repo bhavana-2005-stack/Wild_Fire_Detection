@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire AI - ALERT!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card alert-card">
+            <h1 class="title alert-title">🚨 WILDFIRE ALERT!</h1>
+            
+            <p class="alert-message">10 consecutive fire frames detected! Wildfire confirmed!</p>
+            
+            <div class="frames-grid">
+                {% for frame in fire_frames %}
+                    <div class="frame">
+                        <img src="{{ url_for('uploaded_file', filename=frame.filename) }}" alt="Fire Frame">
+                        <p>{{ frame.confidence|round(2) }}%</p>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <a href="/continue-monitoring" class="btn">Continue Monitoring</a>
+            <a href="/" class="btn">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

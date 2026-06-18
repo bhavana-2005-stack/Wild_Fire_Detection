@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildfire AI - Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="title">Detection Result</h1>
+            
+            <div class="result {{ prediction.lower() }}">
+                <h2>{{ '🔥 Fire Detected' if prediction == 'Fire' else '✅ No Fire Detected' }}</h2>
+                <p class="confidence">Confidence: {{ confidence|round(2) }}%</p>
+            </div>
+            
+            <div class="image-preview">
+                <img src="{{ url_for('uploaded_file', filename=image_path) }}" alt="Uploaded Image">
+            </div>
+            
+            <a href="/" class="btn">← Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

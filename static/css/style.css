@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    text-align: center;
+}
+
+.title {
+    color: #fff;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, #ff6b35, #f7931e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+}
+
+.upload-form {
+    margin-bottom: 20px;
+}
+
+.upload-area {
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 40px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover,
+.upload-area.dragover {
+    border-color: #ff6b35;
+    background: rgba(255, 107, 53, 0.1);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.upload-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn {
+    display: inline-block;
+    background: linear-gradient(90deg, #ff6b35, #f7931e);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    margin: 5px;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.monitor-link {
+    display: inline-block;
+    color: #f7931e;
+    text-decoration: none;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.result {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.result.fire {
+    background: rgba(255, 68, 68, 0.2);
+    border: 1px solid #ff4444;
+}
+
+.result.non-fire {
+    background: rgba(68, 255, 68, 0.2);
+    border: 1px solid #44ff44;
+}
+
+.result h2 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.confidence {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+}
+
+.image-preview {
+    margin: 20px 0;
+}
+
+.image-preview img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.counter {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.counter p {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.message {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 20px 0;
+}
+
+.alert-card {
+    background: rgba(255, 68, 68, 0.2);
+    border: 2px solid #ff4444;
+}
+
+.alert-title {
+    background: linear-gradient(90deg, #ff4444, #ff0000);
+}
+
+.alert-message {
+    color: #fff;
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+.frames-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.frame {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.frame img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.frame p {
+    color: #fff;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
