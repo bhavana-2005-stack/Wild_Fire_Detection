@@ -137,10 +137,12 @@ def simulate_10_fire_frames(image_path):
 def index():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
+    if request.method == 'GET':
+        return redirect(url_for('index'))
     if 'file' not in request.files:
-        return redirect(request.url)
+        return redirect(url_for('index'))
 
     file = request.files['file']
 
