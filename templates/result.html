@@ -3,25 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wildfire AI - Result</title>
+    <title>WildFire AI - Detection Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1 class="title">Detection Result</h1>
-            
-            <div class="result {{ prediction.lower() }}">
-                <h2>{{ '🔥 Fire Detected' if prediction == 'Fire' else '✅ No Fire Detected' }}</h2>
-                <p class="confidence">Confidence: {{ confidence|round(2) }}%</p>
-            </div>
-            
-            <div class="image-preview">
-                <img src="{{ url_for('uploaded_file', filename=image_path) }}" alt="Uploaded Image">
-            </div>
-            
-            <a href="/" class="btn">← Back to Home</a>
+    <nav>
+        <div class="nav-logo">
+            <i class="fas fa-fire"></i>
+            <span>WildFire AI</span>
         </div>
-    </div>
+        <ul class="nav-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/monitor"><i class="fas fa-video"></i> Monitoring</a></li>
+            <li><a href="/emergency-simulation"><i class="fas fa-bolt"></i> Emergency Simulation</a></li>
+        </ul>
+        <div class="nav-status">
+            <div class="nav-status-dot"></div>
+            <span>System Active</span>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="card" style="max-width: 900px; margin: 0 auto;">
+                <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">
+                    <i class="fas fa-search"></i> Detection Result
+                </h1>
+                
+                <div class="result {{ prediction.lower() }}">
+                    <h2 style="font-size: 2rem; margin-bottom: 1rem;">
+                        {% if prediction == 'Fire' %}
+                            <i class="fas fa-fire"></i> FIRE DETECTED!
+                        {% else %}
+                            <i class="fas fa-check-circle"></i> SAFE AREA
+                        {% endif %}
+                    </h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                    <div>
+                        <div class="image-preview">
+                            <h3 style="text-align: center; margin-bottom: 1rem;">Uploaded Image</h3>
+                            <img src="{{ url_for('uploaded_file', filename=image_path) }}" alt="Uploaded Image">
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 style="text-align: center; margin-bottom: 1rem;">Confidence Score</h3>
+                        <div class="confidence-ring-container">
+                            <div class="confidence-ring" style="
+                                background: conic-gradient(
+                                    {% if prediction == 'Fire' %}
+                                        var(--accent-red)
+                                    {% else %}
+                                        var(--accent-green)
+                                    {% endif %} 
+                                    {{ confidence|round(0) }}%, 
+                                    rgba(255, 255, 255, 0.1) 0%
+                                );
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            ">
+                                <div style="
+                                    background: var(--card-bg);
+                                    width: 150px;
+                                    height: 150px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                ">
+                                    <span style="font-size: 2.5rem; font-weight: 800;">
+                                        {{ confidence|round(0) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Prediction Summary</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        <strong>Predicted Class:</strong> {{ prediction }}
+                    </p>
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        <strong>Confidence:</strong> {{ confidence|round(2) }}%
+                    </p>
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        <strong>Timestamp:</strong> <span id="timestamp"></span>
+                    </p>
+                    <p style="color: var(--text-secondary);">
+                        <strong>Status:</strong> Processing Complete
+                    </p>
+                </div>
+
+                <div class="card" style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-robot"></i> AI Analysis</h3>
+                    {% if prediction == 'Fire' %}
+                        <p style="color: var(--text-secondary); line-height: 1.6;">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--accent-red);"></i>
+                            <strong>Warning:</strong> Potential wildfire activity detected. 
+                            Immediate inspection is recommended. Please verify the area and 
+                            contact local fire authorities if necessary.
+                        </p>
+                    {% else %}
+                        <p style="color: var(--text-secondary); line-height: 1.6;">
+                            <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
+                            <strong>Status:</strong> No wildfire indicators detected. 
+                            The area appears to be safe. Continue monitoring for any changes.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/" class="btn">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                    <a href="/monitor" class="btn btn-secondary">
+                        <i class="fas fa-desktop"></i> Monitoring Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container" style="text-align: center;">
+            <p style="color: var(--text-secondary);">
+                © 2026 WildFire AI. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Set current timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
 </body>
 </html>

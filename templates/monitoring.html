@@ -3,40 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wildfire AI - Monitoring</title>
+    <title>WildFire AI - Monitoring Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1 class="title">🔍 Auto Monitoring</h1>
-            
-            <div class="counter">
-                <p>Fire Counter: {{ fire_counter }} / 10</p>
-            </div>
-            
-            <form id="monitor-form" action="/upload-auto-input" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
-                <input type="file" name="file" id="monitor-file-input" accept="image/*" required style="color: white; margin-bottom: 10px;">
-                <button type="submit" class="btn">Add Image to Auto-Monitor</button>
-            </form>
-            
-            {% if message %}
-                <p class="message">{{ message }}</p>
-            {% else %}
-                <div class="result {{ prediction.lower() }}">
-                    <h2>{{ '🔥 Fire Detected' if prediction == 'Fire' else '✅ No Fire Detected' }}</h2>
-                    <p class="confidence">Confidence: {{ confidence|round(2) }}%</p>
-                    <p>Processing: {{ current_image }}</p>
-                </div>
-                <div class="image-preview">
-                    <img src="{{ url_for('uploaded_file', filename=current_image) }}" alt="Monitoring Image">
-                </div>
-                <br>
-                <a href="/monitor" class="btn">Process Next Image</a>
-            {% endif %}
-            
-            <a href="/" class="btn">← Back to Home</a>
+    <nav>
+        <div class="nav-logo">
+            <i class="fas fa-fire"></i>
+            <span>WildFire AI</span>
         </div>
-    </div>
+        <ul class="nav-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/monitor" class="active"><i class="fas fa-video"></i> Monitoring</a></li>
+        </ul>
+        <div class="nav-status">
+            <div class="nav-status-dot"></div>
+            <span>Monitoring Active</span>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="card" style="margin-bottom: 2rem;">
+                <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">
+                    <i class="fas fa-desktop"></i> CCTV-Style Monitoring Dashboard
+                </h1>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                    Real-time wildfire detection with 10-frame validation
+                </p>
+            </div>
+
+            <!-- Monitoring Dashboard Cards -->
+            <div class="monitoring-dashboard">
+                <div class="card">
+                    <h3 style="text-align: center; margin-bottom: 1rem;">
+                        <i class="fas fa-signal"></i> Live Status
+                    </h3>
+                    <div style="text-align: center;">
+                        <p style="font-size: 1.5rem; color: var(--accent-green); margin-bottom: 0.5rem;">
+                            <i class="fas fa-check-circle"></i> Active
+                        </p>
+                        <p style="color: var(--text-secondary);">
+                            Fire Counter: <strong>{{ fire_counter }}/10</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="text-align: center; margin-bottom: 1rem;">
+                        <i class="fas fa-clock"></i> System Health
+                    </h3>
+                    <div style="text-align: center;">
+                        <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                            <i class="fas fa-server" style="color: var(--accent-orange);"></i> Server: Online
+                        </p>
+                        <p style="color: var(--text-secondary);">
+                            <i class="fas fa-database" style="color: var(--accent-orange);"></i> Model: Loaded
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload for Auto-Monitoring -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <h2 style="text-align: center; margin-bottom: 1.5rem;">
+                    <i class="fas fa-upload"></i> Add Image for Monitoring
+                </h2>
+                <form action="/upload-auto-input" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" accept="image/*" required style="display: block; margin: 0 auto 1rem;">
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-plus-circle"></i> Add Image to Auto-Monitor
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 10-Frame Validation Visualizer -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <h2 style="text-align: center; margin-bottom: 1.5rem;">
+                    <i class="fas fa-layer-group"></i> 10-Frame Validation Visualizer
+                </h2>
+                <div class="frame-visualizer">
+                    {% for i in range(1, 11) %}
+                        {% if i <= fire_counter %}
+                            <div class="frame-box orange">
+                                <i class="fas fa-fire"></i>
+                                <div>{{ i }}</div>
+                            </div>
+                        {% else %}
+                            <div class="frame-box green">
+                                <i class="fas fa-check"></i>
+                                <div>{{ i }}</div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Process Next Image -->
+            {% if current_image %}
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h2 style="text-align: center; margin-bottom: 1.5rem;">
+                        <i class="fas fa-image"></i> Current Frame Analysis
+                    </h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div class="image-preview">
+                            <h3 style="text-align: center; margin-bottom: 1rem;">Frame</h3>
+                            <img src="{{ url_for('uploaded_file', filename=current_image) }}" alt="Current Frame">
+                        </div>
+                        <div>
+                            <h3 style="text-align: center; margin-bottom: 1rem;">Prediction</h3>
+                            <div class="result {{ prediction.lower() }}">
+                                <h3>{{ prediction }}</h3>
+                                <p style="margin-top: 0.5rem;">Confidence: {{ confidence|round(2) }}%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card" style="margin-bottom: 2rem;">
+                    <h3 style="text-align: center; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> {{ message }}
+                    </h3>
+                </div>
+            {% endif %}
+
+            <!-- Controls -->
+            <div style="text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/monitor" class="btn">
+                    <i class="fas fa-forward"></i> Process Next Image
+                </a>
+                <a href="/continue-monitoring" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Reset Counter
+                </a>
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container" style="text-align: center;">
+            <p style="color: var(--text-secondary);">
+                © 2026 WildFire AI. All rights reserved.
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
